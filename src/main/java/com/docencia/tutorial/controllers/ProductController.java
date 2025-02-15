@@ -72,33 +72,31 @@ public class ProductController {
 
 
     @PostMapping("/products/save")
-
-    public String save(@Valid @ModelAttribute("productForm") ProductForm productForm, BindingResult result, Model model) {
+    public String save(@Valid @ModelAttribute("productForm") ProductForm productForm,
+                       BindingResult result, Model model) {
 
         if (result.hasErrors()) {
-
             model.addAttribute("title", "Create Product");
-
             return "product/create";
-
         }
 
-
-// Simulación de guardar el producto en la lista (sin persistencia en DB)
-
+        // Simulating saving the product (no DB persistence)
         Map<String, String> newProduct = new HashMap<>();
-
         newProduct.put("id", String.valueOf(products.size() + 1));
-
         newProduct.put("name", productForm.getName());
-
         newProduct.put("description", "Price: $" + productForm.getPrice());
-
+        newProduct.put("price", String.valueOf(productForm.getPrice()));
         products.add(newProduct);
 
+        // Redirect to the created confirmation page
+        return "redirect:/products/created";
+    }
 
-        return "redirect:/products";
-
+    @GetMapping("/products/created")
+    public String created(Model model) {
+        model.addAttribute("title", "Product Created");
+        model.addAttribute("subtitle", "Your product has been created successfully.");
+        return "product/created";
     }
 
 }
